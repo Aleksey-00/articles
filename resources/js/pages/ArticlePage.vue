@@ -52,13 +52,17 @@ function validForm() {
     return !!(!error.value.theme && !error.value.message)
 }
 async function handleSubmitComment() {
-    console.log(validForm())
-    console.log(comment.value)
     if (validForm()) {
         await handleSendComment({
             theme: comment.value.theme.trim(),
-            message: comment.value.message.trim()
+            message: comment.value.message.trim(),
+            article_id: article.value.id
         })
+        if (isSendComment.value) {
+            await getNewsBySlug(route.params.slug)
+            comment.value.theme = ''
+            comment.value.message = ''
+        }
     }
 }
 </script>
@@ -92,7 +96,6 @@ async function handleSubmitComment() {
         <div class="article-page__block__comments">
             <h3>Оставить комментарий</h3>
             <form
-                v-if="!isSendComment"
                 @submit.prevent="handleSubmitComment"
                 class="article-page__form__comment"
             >
@@ -120,14 +123,26 @@ async function handleSubmitComment() {
                     Добавить комментарий
                 </button>
             </form>
-            <p v-if="isSendComment" class="article-page__form__success">
-                Ваше сообщение успешно отправлено
+        </div>
+        <div class="article-page__comments" v-if="article?.comments?.length">
+            <h3 class="article-page__comments__title">
+                Список комментариев
+            </h3>
+            <p
+                class="article-page__comments__text"
+                v-for="comment in article?.comments"
+                :key="article.id"
+            >
+                {{ comment.theme }} - {{ comment.message }}
             </p>
         </div>
     </div>
 </template>
 
 <style scoped lang="css">
+.article-page__comments__title {
+    font-weight: bold;
+}
 .error {
     color: #b34146;
     font-size: 12px;

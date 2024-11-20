@@ -7,6 +7,7 @@ export default function useSendComment() {
 
     async function handleSendComment(data) {
         try {
+            isSendComment.value = false
             const result = await sendComment(data)
             if (result?.status === 200) {
                 isSendComment.value = true
