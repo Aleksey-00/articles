@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property mixed $theme
@@ -16,7 +17,10 @@ class Comments extends Model
        'message'
     ];
 
-    public function articles()
+    /**
+     * @return BelongsTo
+     */
+    public function articles(): BelongsTo
     {
         return $this->belongsTo(Articles::class);
     }
